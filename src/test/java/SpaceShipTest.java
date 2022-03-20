@@ -1,119 +1,135 @@
-import chemistry.ElementaryParticle;
-import chemistry.Molecule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import space.creatures.Character;
 import space.creatures.World;
-import space.map.Locale;
 import space.technique.Spaceship;
 import space.technique.SpaceshipFactory;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 public class SpaceShipTest {
 
     static World world;
+    static ArrayList<Character> charactersInWorld;
 
     static Character firstCharacterForCurrenSpaceShip;
     static Character secondCharacterForCurrentSpaceShip;
-    static Character characterFromSpace;
-    static Character characterToAdd;
+    static Character firstCharacterForAnotherSpaceShip;
+    static Character secondCharacterForAnotherSpaceShip;
+    static Character aloneCharacterFromSpace;
+    static Character aloneCharacterToAdd;
 
-    static ArrayList<Character> characters;
-    static ArrayList<Character> teamOfCurrentSpaceShip;
-
-    static Spaceship currentSpaceshipSpy;
-    static Spaceship anotherSpaceshipSpy;
+    static Spaceship currentSpaceship;
+    static Spaceship anotherSpaceship;
 
     public static void setUpCharacterMocks(){
         firstCharacterForCurrenSpaceShip = Mockito.mock(Character.class);
         secondCharacterForCurrentSpaceShip = Mockito.mock(Character.class);
-        characterFromSpace = Mockito.mock(Character.class);
-        characterToAdd = Mockito.mock(Character.class);
-
-        Mockito.when(firstCharacterForCurrenSpaceShip.setGroup(any())).thenReturn(true);
-        Mockito.when(secondCharacterForCurrentSpaceShip.setGroup(any())).thenReturn(true);
+        firstCharacterForAnotherSpaceShip = Mockito.mock(Character.class);
+        secondCharacterForAnotherSpaceShip = Mockito.mock(Character.class);
+        aloneCharacterFromSpace = Mockito.mock(Character.class);
+        aloneCharacterToAdd = Mockito.mock(Character.class);
     }
 
     private static void setUpWorldMocks(){
         world = Mockito.mock(World.class);
 
-        characters = new ArrayList<>();
-        characters.add(characterFromSpace);
+        charactersInWorld = new ArrayList<>();
+        charactersInWorld.add(aloneCharacterFromSpace);
+        charactersInWorld.add(aloneCharacterToAdd);
+        charactersInWorld.add(firstCharacterForCurrenSpaceShip);
+        charactersInWorld.add(secondCharacterForCurrentSpaceShip);
+        charactersInWorld.add(firstCharacterForAnotherSpaceShip);
+        charactersInWorld.add(secondCharacterForAnotherSpaceShip);
 
-        Mockito.when(world.getCharacters()).thenReturn(characters);
+        Mockito.when(world.getCharacters()).thenReturn(charactersInWorld);
     }
 
-    public static void setUpSpaceShipSpyWithMocks(){
-        Spaceship currentSpaceShip = SpaceshipFactory.createNewSpaceship(0, 0, world, firstCharacterForCurrenSpaceShip, secondCharacterForCurrentSpaceShip);
-        assert currentSpaceShip != null;
-        currentSpaceshipSpy = Mockito.spy(currentSpaceShip);
+    public static void setUpSpaceshipsSpyWithMocks(){
+        Mockito.when(firstCharacterForCurrenSpaceShip.setGroup(any())).thenReturn(true);
+        Mockito.when(secondCharacterForCurrentSpaceShip.setGroup(any())).thenReturn(true);
+        Mockito.when(firstCharacterForAnotherSpaceShip.setGroup(any())).thenReturn(true);
+        Mockito.when(secondCharacterForAnotherSpaceShip.setGroup(any())).thenReturn(true);
 
-        Spaceship anotherSpaceShip = SpaceshipFactory.createNewSpaceship(0, 0, world, firstCharacterForCurrenSpaceShip, secondCharacterForCurrentSpaceShip);
-        assert anotherSpaceShip != null;
-        anotherSpaceshipSpy = Mockito.spy(anotherSpaceShip);
-
-        teamOfCurrentSpaceShip = new ArrayList<>();
-        teamOfCurrentSpaceShip.add(firstCharacterForCurrenSpaceShip);
-        teamOfCurrentSpaceShip.add(secondCharacterForCurrentSpaceShip);
-
+        currentSpaceship = SpaceshipFactory.createNewSpaceship(0, 0, world, firstCharacterForCurrenSpaceShip, secondCharacterForCurrentSpaceShip);
+        anotherSpaceship = SpaceshipFactory.createNewSpaceship(0, 0, world, firstCharacterForAnotherSpaceShip, secondCharacterForAnotherSpaceShip);
     }
 
     @BeforeAll
     public static void setUpAllMocks(){
         setUpCharacterMocks();
         setUpWorldMocks();
-        setUpSpaceShipSpyWithMocks();
+        setUpSpaceshipsSpyWithMocks();
     }
 
     @Test
     public void addMemberValidCharacter(){
-        Mockito.when(characterToAdd.setGroup(any())).thenReturn(true);
-        Mockito.when(currentSpaceshipSpy.getMembers()).thenReturn(teamOfCurrentSpaceShip);
+        Mockito.when(aloneCharacterToAdd.setGroup(any())).thenReturn(true);
 
-        assertTrue(currentSpaceshipSpy.addMember(characterToAdd));
+        assertTrue(currentSpaceship.addMember(aloneCharacterToAdd));
     }
 
     @Test
     public void addMemberInvalidCharacter(){
-        Mockito.when(characterToAdd.setGroup(any())).thenReturn(false);
-        Mockito.when(currentSpaceshipSpy.getMembers()).thenReturn(teamOfCurrentSpaceShip);
+        Mockito.when(aloneCharacterToAdd.setGroup(any())).thenReturn(false);
 
-        assertFalse(currentSpaceshipSpy.addMember(characterToAdd));
+        assertFalse(currentSpaceship.addMember(aloneCharacterToAdd));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "6, 6",
+            "19, 56"
+    })
+    public void changeLocaleNoPossibleCrash(int x, int y){
+        currentSpaceship.changeLocale(x, y);
+        assertEquals(x, currentSpaceship.getCurrentLocale().getCoordinateX());
+        assertEquals(y, currentSpaceship.getCurrentLocale().getCoordinateY());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+           "5, 5",
+           "-3, -3"
+    })
+    public void changeLocaleWithPossibleCrash(int x, int y){
+        charactersInWorld = new ArrayList<>();
+        charactersInWorld.add(firstCharacterForAnotherSpaceShip);
+        Mockito.when(world.getCharacters()).thenReturn(charactersInWorld);
+
+        Mockito.doReturn(false, true, false).when(world).isNear(any(), any());
+        Mockito.when(firstCharacterForAnotherSpaceShip.isAlone()).thenReturn(false);
+
+        currentSpaceship.changeLocale(x, y);
+
+        assertEquals(x - 15, currentSpaceship.getCurrentLocale().getCoordinateX());
+        assertEquals(y - 15, currentSpaceship.getCurrentLocale().getCoordinateY());
     }
 
     @Test
-    public void changeLocaleNearACharacter(){
-        Mockito.clearInvocations(currentSpaceshipSpy);
+    public void addMemberIfPossibleWhenPossible(){
+        int prevSize = anotherSpaceship.getMembers().size();
 
-        Mockito.when(characterFromSpace.getGroup()).thenReturn(null);
-        //Mockito.when(firstCharacterForCurrenSpaceShip.getGroup()).thenReturn(currentSpaceshipSpy);
-        //Mockito.when(firstCharacterForCurrenSpaceShip.getGroup()).thenReturn(currentSpaceshipSpy);
+        charactersInWorld = new ArrayList<>();
+        charactersInWorld.add(aloneCharacterFromSpace);
+        Mockito.when(world.getCharacters()).thenReturn(charactersInWorld);
 
         Mockito.when(world.isNear(any(), any())).thenReturn(true);
-        currentSpaceshipSpy.changeLocale(0, 0);
+        Mockito.when(aloneCharacterFromSpace.isAlone()).thenReturn(true);
 
-        Mockito.verify(currentSpaceshipSpy).addMember(any());
+        anotherSpaceship.addMemberIfPossible();
+
+        int newSize = anotherSpaceship.getMembers().size();
+
+        assertEquals(1, newSize - prevSize);
     }
 
-    @Test
-    public void changeLocaleNearAnotherSpaceShip(){
-        // нужно вернуть anotherSpaceshipSpy
-        // как ????
-        //Mockito.when(characterFromSpace.getGroup()).thenReturn();
-    }
-
-    @Test
-    public void changeLocaleNoNearObjects(){
-    }
 
 }

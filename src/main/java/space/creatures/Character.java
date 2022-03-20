@@ -21,19 +21,10 @@ public class Character implements ElementaryParticle {
         currentLocale.setCoordinateX( x );
         currentLocale.setCoordinateY( y );
     }
-
-    @Override
-    public boolean changeLocale(int x, int y) {
-        if (spaceship == null) {
-            setCurrentLocale(currentLocale.getCoordinateX() + x, currentLocale.getCoordinateY() + y);
-            for ( Character character : world.getCharacters()) {
-                if (character != this && world.isNear(this, character) && (character.getGroup() == null)){
-                            SpaceshipFactory.createNewSpaceship(this.currentLocale.getCoordinateX(), this.currentLocale.getCoordinateY(), world, this, character);
-                    }
-                }
-            }
-            return true;
-        }
+    public World getWorld(){ return world; }
+    public boolean isAlone(){
+        return spaceship == null;
+    }
 
     @Override
     public boolean setGroup(Molecule<? extends ElementaryParticle> spaceship) {
@@ -50,6 +41,30 @@ public class Character implements ElementaryParticle {
     @Override
     public Molecule<? extends ElementaryParticle> getGroup() {
         return spaceship;
+    }
+
+    @Override
+    public boolean changeLocale(int x, int y) {
+        if (getGroup() == null) {
+            setCurrentLocale(x, y);
+            createSpaceshipIfPossible();
+            return true;
+        }
+        return false;
+    }
+
+    public void createSpaceshipIfPossible(){
+        for ( Character character : getWorld().getCharacters()) {
+            if (isNear(character) && isAlone()){
+                SpaceshipFactory.createNewSpaceship(getCurrentLocale().getCoordinateX(),
+                        getCurrentLocale().getCoordinateY(), getWorld(), this, character);
+            }
+        }
+    }
+
+    public boolean isNear(Character character){
+        boolean isNear = getWorld().isNear(this, character);
+        return character != this && isNear;
     }
 
 }

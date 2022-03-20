@@ -29,25 +29,43 @@ public class Spaceship implements Molecule<Character> {
         return character.setGroup(this);
     }
 
+
+    @Override
+    public Locale getCurrentLocale() {
+        return currentLocale;
+    }
+
     @Override
     public void changeLocale(int x, int y) {
         currentLocale.setCoordinateX( x );
         currentLocale.setCoordinateY( y );
 
+        addMemberIfPossible();
+        preventPossibleCrash();
+    }
+
+    public void addMemberIfPossible(){
         for ( Character character : world.getCharacters() ) {
-            if ( character.getGroup() != this && world.isNear(character, this.getMembers().get(0))) {
-                if (character.getGroup() == null) {
-                    this.addMember(character);
-                }else{
-                    changeLocale( x - 6, y - 6 );
-                }
+            if ( !isMember(character) && isNear(character) && character.isAlone() ) {
+                this.addMember(character);
             }
         }
     }
 
-    @Override
-    public Locale getCurrentLocale() {
-        return currentLocale;
+    public void preventPossibleCrash(){
+        for ( Character character : world.getCharacters() ) {
+            if ( !character.isAlone() && !isMember(character) && isNear(character)) {
+                changeLocale( getCurrentLocale().getCoordinateX() - 15, getCurrentLocale().getCoordinateY() - 15 );
+            }
+        }
+    }
+
+    private boolean isNear(Character character){
+        return world.isNear(character, this.getMembers().get(0));
+    }
+
+    private boolean isMember(Character character){
+        return character.getGroup() == this;
     }
 
 }

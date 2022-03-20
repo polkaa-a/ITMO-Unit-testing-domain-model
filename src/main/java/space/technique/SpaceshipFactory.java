@@ -7,13 +7,21 @@ public class SpaceshipFactory {
 
     private SpaceshipFactory() {}
 
+    private static boolean isValidNumOfCharacters(Character... characters){
+        return characters.length >= 2;
+    }
+
     public static Spaceship createNewSpaceship(int x, int y, World world, Character... characters){
-        if (characters.length < 2) return null;
+        if (!isValidNumOfCharacters(characters)) return null;
+
         Spaceship spaceship = new Spaceship( x, y, world );
         for ( Character character : characters) {
             if(!spaceship.addMember(character)) return null;
         }
+
         return spaceship;
     }
+
+
 
 }

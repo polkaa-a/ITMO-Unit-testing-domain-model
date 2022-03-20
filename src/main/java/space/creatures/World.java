@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class World {
 
-    private ArrayList<Character> characters;
+    private final ArrayList<Character> characters = new ArrayList<>();
 
     public Character createNewCharacter(int x, int y){
         Character character = new Character(x, y);
