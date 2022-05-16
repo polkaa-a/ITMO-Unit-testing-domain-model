@@ -9,18 +9,14 @@ public class Character implements ElementaryParticle {
 
     private Locale currentLocale;
     private Spaceship spaceship;
-    World world;
+    protected World world;
 
-    Character( int x, int y ){
+    protected Character( int x, int y ){
         currentLocale = new Locale( x, y );
         spaceship = null;
     }
 
     public Locale getCurrentLocale(){ return this.currentLocale; }
-    private void setCurrentLocale(int x, int y ){
-        currentLocale.setCoordinateX( x );
-        currentLocale.setCoordinateY( y );
-    }
     public World getWorld(){ return world; }
     public boolean isAlone(){
         return spaceship == null;
@@ -46,7 +42,8 @@ public class Character implements ElementaryParticle {
     @Override
     public boolean changeLocale(int x, int y) {
         if (getGroup() == null) {
-            setCurrentLocale(x, y);
+            currentLocale.setCoordinateX( x );
+            currentLocale.setCoordinateY( y );
             createSpaceshipIfPossible();
             return true;
         }
@@ -56,8 +53,7 @@ public class Character implements ElementaryParticle {
     public void createSpaceshipIfPossible(){
         for ( Character character : getWorld().getCharacters()) {
             if (isNear(character) && isAlone()){
-                SpaceshipFactory.createNewSpaceship(getCurrentLocale().getCoordinateX(),
-                        getCurrentLocale().getCoordinateY(), getWorld(), this, character);
+                SpaceshipFactory.createNewSpaceship(getCurrentLocale().getCoordinateX(), getCurrentLocale().getCoordinateY(), getWorld(), this, character);
             }
         }
     }

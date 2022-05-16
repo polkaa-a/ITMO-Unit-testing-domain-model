@@ -1,7 +1,7 @@
+package space.map;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import space.map.Locale;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LocaleTest {

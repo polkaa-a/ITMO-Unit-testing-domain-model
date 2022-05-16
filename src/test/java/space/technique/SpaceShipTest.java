@@ -1,35 +1,33 @@
-import org.junit.jupiter.api.BeforeAll;
+package space.technique;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
-
 import space.creatures.Character;
 import space.creatures.World;
-import space.technique.Spaceship;
-import space.technique.SpaceshipFactory;
-
 import java.util.ArrayList;
-
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 public class SpaceShipTest {
 
-    static World world;
-    static ArrayList<Character> charactersInWorld;
+    private World world;
+    private List<Character> charactersInWorld;
 
-    static Character firstCharacterForCurrenSpaceShip;
-    static Character secondCharacterForCurrentSpaceShip;
-    static Character firstCharacterForAnotherSpaceShip;
-    static Character secondCharacterForAnotherSpaceShip;
-    static Character aloneCharacterFromSpace;
-    static Character aloneCharacterToAdd;
+    private Character firstCharacterForCurrenSpaceShip;
+    private Character secondCharacterForCurrentSpaceShip;
+    private Character firstCharacterForAnotherSpaceShip;
+    private Character secondCharacterForAnotherSpaceShip;
+    private Character aloneCharacterFromSpace;
+    private Character aloneCharacterToAdd;
 
-    static Spaceship currentSpaceship;
-    static Spaceship anotherSpaceship;
+    private Spaceship currentSpaceship;
+    private Spaceship anotherSpaceship;
 
-    public static void setUpCharacterMocks(){
+    private void setUpCharacterMocks(){
         firstCharacterForCurrenSpaceShip = Mockito.mock(Character.class);
         secondCharacterForCurrentSpaceShip = Mockito.mock(Character.class);
         firstCharacterForAnotherSpaceShip = Mockito.mock(Character.class);
@@ -38,7 +36,7 @@ public class SpaceShipTest {
         aloneCharacterToAdd = Mockito.mock(Character.class);
     }
 
-    private static void setUpWorldMocks(){
+    private void setUpWorldMocks(){
         world = Mockito.mock(World.class);
 
         charactersInWorld = new ArrayList<>();
@@ -52,7 +50,7 @@ public class SpaceShipTest {
         Mockito.when(world.getCharacters()).thenReturn(charactersInWorld);
     }
 
-    public static void setUpSpaceshipsSpyWithMocks(){
+    private void setUpSpaceshipsSpyWithMocks(){
         Mockito.when(firstCharacterForCurrenSpaceShip.setGroup(any())).thenReturn(true);
         Mockito.when(secondCharacterForCurrentSpaceShip.setGroup(any())).thenReturn(true);
         Mockito.when(firstCharacterForAnotherSpaceShip.setGroup(any())).thenReturn(true);
@@ -62,8 +60,8 @@ public class SpaceShipTest {
         anotherSpaceship = SpaceshipFactory.createNewSpaceship(0, 0, world, firstCharacterForAnotherSpaceShip, secondCharacterForAnotherSpaceShip);
     }
 
-    @BeforeAll
-    public static void setUpAllMocks(){
+    @BeforeEach
+    public void setUpAllMocks(){
         setUpCharacterMocks();
         setUpWorldMocks();
         setUpSpaceshipsSpyWithMocks();
@@ -72,14 +70,12 @@ public class SpaceShipTest {
     @Test
     public void addMemberValidCharacter(){
         Mockito.when(aloneCharacterToAdd.setGroup(any())).thenReturn(true);
-
         assertTrue(currentSpaceship.addMember(aloneCharacterToAdd));
     }
 
     @Test
     public void addMemberInvalidCharacter(){
         Mockito.when(aloneCharacterToAdd.setGroup(any())).thenReturn(false);
-
         assertFalse(currentSpaceship.addMember(aloneCharacterToAdd));
     }
 
@@ -130,6 +126,5 @@ public class SpaceShipTest {
 
         assertEquals(1, newSize - prevSize);
     }
-
 
 }

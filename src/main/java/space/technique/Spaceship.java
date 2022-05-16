@@ -6,20 +6,21 @@ import space.creatures.Character;
 import space.map.Locale;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Spaceship implements Molecule<Character> {
 
-    final private ArrayList<Character> team = new ArrayList<>();
-    final private Locale currentLocale;
+    private final List<Character> team = new ArrayList<>();
+    private final Locale currentLocale;
     private final World world;
 
-    Spaceship( int x, int y, World world ) {
+    protected Spaceship(int x, int y, World world) {
         currentLocale = new Locale(x, y);
         this.world = world;
     }
 
     @Override
-    public ArrayList<Character> getMembers() {
+    public List<Character> getMembers() {
         return team;
     }
 
@@ -37,34 +38,34 @@ public class Spaceship implements Molecule<Character> {
 
     @Override
     public void changeLocale(int x, int y) {
-        currentLocale.setCoordinateX( x );
-        currentLocale.setCoordinateY( y );
+        currentLocale.setCoordinateX(x);
+        currentLocale.setCoordinateY(y);
 
         addMemberIfPossible();
         preventPossibleCrash();
     }
 
-    public void addMemberIfPossible(){
-        for ( Character character : world.getCharacters() ) {
-            if ( !isMember(character) && isNear(character) && character.isAlone() ) {
+    public void addMemberIfPossible() {
+        for (Character character : world.getCharacters()) {
+            if (!isMember(character) && isNear(character) && character.isAlone()) {
                 this.addMember(character);
             }
         }
     }
 
-    public void preventPossibleCrash(){
-        for ( Character character : world.getCharacters() ) {
-            if ( !character.isAlone() && !isMember(character) && isNear(character)) {
-                changeLocale( getCurrentLocale().getCoordinateX() - 15, getCurrentLocale().getCoordinateY() - 15 );
+    public void preventPossibleCrash() {
+        for (Character character : world.getCharacters()) {
+            if (!character.isAlone() && !isMember(character) && isNear(character)) {
+                changeLocale(getCurrentLocale().getCoordinateX() - 15, getCurrentLocale().getCoordinateY() - 15);
             }
         }
     }
 
-    private boolean isNear(Character character){
+    private boolean isNear(Character character) {
         return world.isNear(character, this.getMembers().get(0));
     }
 
-    private boolean isMember(Character character){
+    private boolean isMember(Character character) {
         return character.getGroup() == this;
     }
 

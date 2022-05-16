@@ -1,31 +1,31 @@
-import org.junit.jupiter.api.BeforeAll;
+package space.technique;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import space.creatures.Character;
 import space.creatures.World;
-import space.technique.SpaceshipFactory;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 
 public class SpaceShipFactoryTest {
-    static World world;
-    static Character firstCharacter;
-    static Character secondCharacter;
+    private World world;
+    private Character firstCharacter;
+    private Character secondCharacter;
 
-    @BeforeAll
-    public static void setUpMocks(){
+    @BeforeEach
+    public void setUpMocks(){
         world = Mockito.mock(World.class);
         firstCharacter = Mockito.mock(Character.class);
         secondCharacter = Mockito.mock(Character.class);
+
+        Mockito.when(firstCharacter.setGroup(any())).thenReturn(true);
+        Mockito.when(secondCharacter.setGroup(any())).thenReturn(true);
     }
 
     @Test
     public void spaceShipInitializationValidInput(){
-        Mockito.when(firstCharacter.setGroup(any())).thenReturn(true);
-        Mockito.when(secondCharacter.setGroup(any())).thenReturn(true);
-
         assertNotNull(SpaceshipFactory.createNewSpaceship(0, 0, world, firstCharacter, secondCharacter));
     }
 
@@ -38,7 +38,6 @@ public class SpaceShipFactoryTest {
     public void spaceShipInitializationInvalidMember(){
 
         Mockito.when(firstCharacter.setGroup(any())).thenReturn(false);
-
         assertNull(SpaceshipFactory.createNewSpaceship(0, 0, world, firstCharacter, secondCharacter));
 
     }

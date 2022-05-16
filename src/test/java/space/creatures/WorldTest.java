@@ -1,23 +1,23 @@
-import org.junit.jupiter.api.BeforeAll;
+package space.creatures;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
-import space.creatures.Character;
-import space.creatures.World;
 import space.map.Locale;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WorldTest {
 
-    static Locale localeForFirstCharacter;
-    static Locale localeForSecondCharacter;
+    private Locale localeForFirstCharacter;
+    private Locale localeForSecondCharacter;
 
-    static Character firstCharacter;
-    static Character secondCharacter;
+    private Character firstCharacter;
+    private Character secondCharacter;
 
-    @BeforeAll
-    public static void setUpMocks(){
+    @BeforeEach
+    public void setUpMocks(){
         firstCharacter = Mockito.mock(Character.class);
         secondCharacter = Mockito.mock(Character.class);
 

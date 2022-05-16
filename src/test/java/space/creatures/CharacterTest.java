@@ -1,13 +1,13 @@
-import org.junit.jupiter.api.BeforeAll;
+package space.creatures;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
-import space.creatures.Character;
-import space.creatures.World;
 import space.technique.Spaceship;
-
 import java.util.ArrayList;
+import java.util.List;
 import space.map.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,24 +16,23 @@ import static org.mockito.Mockito.doCallRealMethod;
 
 public class CharacterTest {
 
-    static World worldSpy;
+    private World worldSpy;
 
-    static Spaceship spaceship;
-    static ArrayList<Character> spaceshipMembers;
-    static Character spaceshipCharacter;
-    static Locale spaceshipLocale;
+    private Spaceship spaceship;
+    private List<Character> spaceshipMembers;
+    private Character spaceshipCharacter;
 
-
-    @BeforeAll
-    public static void setUpWorldSpy(){
+    @BeforeEach
+    public void setUpWorldSpy(){
         worldSpy = Mockito.spy(World.class);
         doCallRealMethod().when(worldSpy).createNewCharacter(anyInt(), anyInt());
+        setUpSpaceshipPartsWithDefaultBehavior();
     }
 
-    private static void setUpSpaceshipPartsWithDefaultBehavior(){
+    private void setUpSpaceshipPartsWithDefaultBehavior(){
         spaceshipMembers = new ArrayList<>();
         spaceship = Mockito.mock(Spaceship.class);
-        spaceshipLocale = Mockito.mock(Locale.class);
+        Locale spaceshipLocale = Mockito.mock(Locale.class);
 
         spaceshipCharacter = worldSpy.createNewCharacter(0, 0);
 
@@ -61,7 +60,6 @@ public class CharacterTest {
 
     @Test
     public void setGroupNotNullSpaceship(){
-        setUpSpaceshipPartsWithDefaultBehavior();
         spaceshipMembers.add(spaceshipCharacter);
 
         assertTrue(spaceshipCharacter.setGroup(spaceship));
@@ -71,8 +69,6 @@ public class CharacterTest {
 
     @Test
     public void setGroupSpaceshipWithNoMembers(){
-        setUpSpaceshipPartsWithDefaultBehavior();
-
         assertFalse(spaceshipCharacter.setGroup(spaceship));
         assertTrue(spaceshipCharacter.isAlone());
         assertNotEquals(spaceship, spaceshipCharacter.getGroup());
@@ -106,7 +102,6 @@ public class CharacterTest {
     @Test
     public void changeLocaleGroupIsNull(){
         setUpSpaceshipPartsWithDefaultBehavior();
-
         assertTrue(spaceshipCharacter.changeLocale(0, 0));
     }
 

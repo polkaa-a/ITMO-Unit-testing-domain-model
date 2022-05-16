@@ -1,10 +1,11 @@
 package space.creatures;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class World {
 
-    private final ArrayList<Character> characters = new ArrayList<>();
+    private final List<Character> characters = new ArrayList<>();
 
     public Character createNewCharacter(int x, int y){
         Character character = new Character(x, y);
@@ -13,7 +14,7 @@ public class World {
         return character;
     }
 
-    public ArrayList<Character> getCharacters(){
+    public List<Character> getCharacters(){
         return characters;
     }
 
